@@ -50,7 +50,7 @@ public class DropOutStack<E> implements StackEaaa<E> {
         if (top != null) {
             top.previous = null;
         } else {
-            bottom = null; // Update bottom when the stack becomes empty
+            bottom = null;
         }
         size--;
         return element;
