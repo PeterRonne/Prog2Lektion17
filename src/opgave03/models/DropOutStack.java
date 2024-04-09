@@ -1,9 +1,7 @@
 package opgave03.models;
 
-import opgave01.models.LinkedStack;
 import opgave01.models.StackEaaa;
 
-import java.security.cert.PKIXRevocationChecker;
 import java.util.NoSuchElementException;
 
 public class DropOutStack<E> implements StackEaaa<E> {
@@ -25,18 +23,15 @@ public class DropOutStack<E> implements StackEaaa<E> {
 
     @Override
     public void push(E element) {
-        if (size == maxSize) {
-            bottom = bottom.next;
-            if (bottom != null) {
-                bottom.previous = null;
-            }
-        }
-        Node<E> newNode = new Node<>(element, null, top);
-        if (isEmpty()) {
+        Node<E> newNode = new Node<>(element, top, null);
+        if (size == 0) {
             bottom = newNode;
-        }
-        if (top != null) {
-            top.next = newNode;
+        } else if (size == maxSize) {
+            bottom = bottom.prev;
+            bottom.next = null;
+            size--;
+        } else {
+            top.prev = newNode;
         }
         top = newNode;
         size++;
@@ -47,11 +42,6 @@ public class DropOutStack<E> implements StackEaaa<E> {
         throwIfEmpty();
         E element = top.element;
         top = top.next;
-        if (top != null) {
-            top.previous = null;
-        } else {
-            bottom = null;
-        }
         size--;
         return element;
     }
@@ -79,15 +69,15 @@ public class DropOutStack<E> implements StackEaaa<E> {
         return size;
     }
 
-    private class Node<T> {
-        T element;
-        Node<T> next;
-        Node<T> previous;
+    private class Node<E> {
+        E element;
+        Node<E> next;
+        Node<E> prev;
 
-        public Node(T element, Node<T> next, Node<T> previous) {
+        public Node(E element, Node<E> next, Node<E> prev) {
             this.element = element;
             this.next = next;
-            this.previous = previous;
+            this.prev = prev;
         }
 
         @Override
@@ -103,9 +93,9 @@ public class DropOutStack<E> implements StackEaaa<E> {
     }
 
     public void printStack() {
-        Node<E> current = bottom;
+        Node<E> current = top;
 
-        while (current.next != null) {
+        while (current != null) {
             System.out.println(current);
             current = current.next;
         }
